@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tweets</title>
+<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap-theme.css">
+
+<script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+<script href="bower_components/bootstrap/dist/js/bootstrap-min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+   <script>
+      // socket.io specific code
+      var socket = io.connect('http://localhost:3001');
+
+      socket.on('/tweets', function(data) {
+        for( var i = 0; i < data.length; i++){
+          if(data[i].type == 'Tweet')
+              $('#line').append('<tr><td>' + data[i].idtweet + '</td><td>' + data[i].text + '</td><td id ='+data[i].idtweet+'></td></tr>');
+          else
+            $("#" + data[i].idtweet ).text( data[i].text);
+        }  
+      });
+      
+      socket.on('error', function (e) {
+        message('System', e ? e : 'A unknown error occurred');
+      });
+
+      setTimeout(function(){
+         window.location.reload(1);
+      }, 5000);
+
+    </script>
+</head>
+<div class="container-fluid">
+  <table class="table" >
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Tweet</th>
+        <th>Tweet created</th>
+      </tr>
+    </thead>
+     <tbody id="line">
+    </tbody>
+  </table>
+  </div>
+</body>
+</html>

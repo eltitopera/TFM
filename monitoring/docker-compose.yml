@@ -1,0 +1,52 @@
+version: '2'
+
+services:
+  prometheus:
+    image: prometheus
+    hostname: prometheus
+    tty : true
+    ports:
+      - 9090:9090
+    links:
+      - alertmanager
+
+  node-exporter:
+    hostname: node-exporter
+    image: prom/node-exporter
+    tty: true
+    expose:
+      - 9100
+    volumes: 
+      - /proc:/host/proc
+      - /sys:/host/sys
+      - /:/rootfs
+    command:
+      - '-collector.procfs=/host/proc'
+      - '-collector.sysfs=/host/sysfs'
+      - '-collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+
+  alertmanager:
+    image: alertmanager
+    hostname: alertmanager
+    tty: true
+    ports:
+      - 9093:9093
+  
+  cadvisor:
+    image: google/cadvisor
+    hostname: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    expose:
+      - 8080
+
+  grafana:
+    image: grafana
+    tty: true
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
