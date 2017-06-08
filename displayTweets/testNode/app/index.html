@@ -24,19 +24,6 @@
             $("#" + data[i].idtweet + "_2").text( data[i].text);
         }  
       });
-
-      socket.on('/tweets_new', function(data) {
-        for( var i = 0; i < data.length; i++){
-          if($("#" + data[i].idtweet +"_1").length == 0) //if not matches
-              $('#line').append('<tr><td>' + data[i].idtweet + '</td><td id = '+ data[i].idtweet +"_1"+'></td><td id ='+data[i].idtweet+"_2"+'></td></tr>');
-          
-          if(data[i].type == 'Tweet')
-              $("#" + data[i].idtweet + "_1").text( data[i].text);
-            
-          else
-            $("#" + data[i].idtweet + "_2").text( data[i].text);
-        }  
-      });
       
       socket.on('error', function (e) {
         message('System', e ? e : 'A unknown error occurred');
