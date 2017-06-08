@@ -1,0 +1,101 @@
+version: '2'
+services:
+  manager: 
+    image: manager
+    hostname: manager
+    depends_on:
+      - elassandra
+    tty: true
+    volumes:
+      - ./logs/:/opt/logs/
+  wiki:
+    image: wiki
+    links:
+      - kafka
+    hostname: wiki
+    tty: true
+  caracter:
+    image: caracter
+    links:
+      - kafka
+    volumes:
+     - ./caracter/:/opt/out
+    hostname: caracter
+    tty: true
+  tweets:
+    image: tweets
+    links:
+      - kafka
+    hostname: tweets
+    tty: true
+  kafka:
+    image: kafka
+    hostname: kafka
+    ports:
+     - "2181:2181"
+     - "9092:9092"
+    tty: true
+    links:
+     - flink
+  flink:
+     image: flink
+     hostname: flink
+     tty: true
+     links:
+#        - cassandra
+        - redis
+        - elassandra
+     depends_on:
+      - elassandra
+     ports:
+     - "8081:8081"
+  redis:
+     image: redis
+     hostname: redis
+     tty: true
+     ports:
+     - "6379:6379"
+
+  elassandra:
+     image: elassandra
+     hostname: elassandra
+     volumes:
+     - ./elassandra-2.4/ElassandraData:/opt/elassandra-2.4.2/data/ 
+     tty: true
+     ports:
+      - "9200:9200"
+      - "9300:9300"
+      - "9042:9042"
+
+  kibana:
+     image: kibana
+     hostname: kibana 
+     tty: true
+     ports:
+      - "5601:5601"
+     depends_on:
+      - elassandra
+
+  logstash:
+     image: logstash
+     hostname: logstash
+     tty: true
+     depends_on:
+      - elassandra
+     volumes:
+     - ./logs/:/opt/logs/
+
+  rethinkdb:
+    image: rethinkdb
+    hostname: rethinkdb
+    tty: true
+    ports:
+     - "8080:8080"
+     - "28015:28015"
+
+  display:
+    image: displaytweets
+    hostname: display
+    tty: true
+    ports:
+     - "3001:3001"
