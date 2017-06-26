@@ -17,7 +17,6 @@ import rethinkdb as r
 
 
 #Twitter API credentials
-<<<<<<< HEAD
 CONSUMER_KEY = <CONSUMER_KEY>
 CONSUMER_SECRET = <CONSUMER_SECRET>
 ACCESS_KEY = <ACCESS_KEY>
